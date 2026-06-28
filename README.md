@@ -3,14 +3,15 @@
 A single-file static website advertising Tietam's summer **dog-walking ($10/walk)** and
 **plant-watering ($10/visit)** services for neighbors in Westfield, Indiana.
 
-Contact is by **text only** to her mom at **317-445-3198** (no phone calls).
+Bookings go by **email** to **T.ladd15@icloud.com**.
 
 The entire site is one file: [`index.html`](index.html). Plain HTML/CSS/JS — no framework,
 no build step. The hero photo is **embedded directly in the HTML** (base64 data URI), so the
 page stays a single self-contained file with no separate image asset to host. The booking
 calendar is a small vanilla-JS widget (no backend): pick a service (dog walk $10, plants $10,
-or **both for $15**), a day, a time, and enter your name + address — it builds a pre-filled
-`sms:` link to her mom **and** adds the booking to a **📋 Booking board** on the page.
+or **both for $15**), a day, a time, and enter your name + neighborhood + address — it builds
+a pre-filled **email** (`mailto:`) to T.ladd15@icloud.com **and** saves the booking to the
+private schedule page ([`schedule.html`](schedule.html)).
 
 > **About the booking board:** it's stored in the browser's `localStorage`, so it's saved
 > **on whatever device made the booking** — it is *not* a shared online schedule that Mom
@@ -25,7 +26,7 @@ or **both for $15**), a day, a time, and enter your name + address — it builds
 > grade, exact school, and a real phone number are all public together. That was an
 > informed, deliberate choice — but if you ever want to dial the exposure back down (swap
 > the photo for an illustration, or generalize the school to just "Westfield"), both are
-> quick edits in `index.html`. Keep the phone number and "text only / no calls" rule exact.
+> quick edits in `index.html`. Bookings go to the email **T.ladd15@icloud.com**.
 
 ---
 

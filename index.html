@@ -177,8 +177,8 @@
           <div style="width:46px; height:46px; border-radius:50% 50% 50% 4px; background:var(--accent); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:18px;">···</div>
           <span style="font-weight:700; font-size:20px; color:#5a4a86;">If you're interested…</span>
         </div>
-        <h2 style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(28px,4.6vw,40px); margin:6px 0 14px; color:var(--deep); line-height:1.05;">Please text my mom 💜</h2>
-        <a href="sms:317-445-3198" style="display:inline-block; font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(26px,5vw,38px); letter-spacing:.02em; color:#1e1b4b; background:linear-gradient(135deg,#fdf2ff,#f6ecff); border:3px solid var(--accent2); padding:14px 30px; border-radius:18px; box-shadow:0 14px 30px rgba(236,72,153,.18);">317‑445‑3198</a>
+        <h2 style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(28px,4.6vw,40px); margin:6px 0 14px; color:var(--deep); line-height:1.05;">Email me to book 💜</h2>
+        <a href="mailto:T.ladd15@icloud.com" style="display:inline-block; font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(18px,3.6vw,27px); letter-spacing:.01em; color:#1e1b4b; background:linear-gradient(135deg,#fdf2ff,#f6ecff); border:3px solid var(--accent2); padding:13px 24px; border-radius:18px; box-shadow:0 14px 30px rgba(236,72,153,.18); word-break:break-all;">T.ladd15@icloud.com</a>
         <div style="margin-top:20px;">
           <div style="font-weight:700; font-size:16px; color:#5a4a86; margin-bottom:8px;">Easy to pay afterward — Venmo works great 💸</div>
           <a href="https://venmo.com/u/Ashley-Ladd-12" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:10px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:20px; color:#fff; background:#008CFF; padding:13px 24px; border-radius:14px; box-shadow:0 10px 24px rgba(0,140,255,.30);">
@@ -193,7 +193,7 @@
       <div style="flex:0 0 auto; transform:rotate(4deg); position:relative;">
         <div style="position:absolute; top:-16px; left:50%; transform:translateX(-50%) rotate(-5deg); width:84px; height:26px; background:rgba(236,72,153,.55); border-radius:2px;"></div>
         <div style="background:#fff7c2; padding:26px 30px; border-radius:4px; box-shadow:0 16px 34px rgba(0,0,0,.14); width:220px;">
-          <div style="font-family:'Caveat',cursive; font-weight:700; font-size:30px; color:#3a2a1a; line-height:1.1;">No phone calls, please!</div>
+          <div style="font-family:'Caveat',cursive; font-weight:700; font-size:30px; color:#3a2a1a; line-height:1.1;">Email is the best way!</div>
           <div style="text-align:center; font-size:22px; color:var(--accent2); margin-top:6px;">♥</div>
         </div>
       </div>
@@ -357,14 +357,15 @@
       var nd = niceDate();
       var summary = svcName() + ' (' + svcPrice() + ')  ·  ' + nd + '  ·  ' + st.slot;
       var body = "Hi! This is " + name + " in the " + hood + " neighborhood. I'd like to book Tietam for a " + svcName() + " (" + svcPrice() + ") on " + nd + " at " + st.slot + ". Address: " + addr + ".";
-      var href = 'sms:317-445-3198?&body=' + encodeURIComponent(body);
+      var subject = 'Booking for Tietam — ' + svcName();
+      var href = 'mailto:T.ladd15@icloud.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
       box.innerHTML =
         '<div style="background:linear-gradient(135deg,#faf5ff,#f3ecff); border:2px solid #e2d5fb; border-radius:18px; padding:18px;">' +
           '<div style="font-weight:800; color:#8b7bb0; font-size:12px; text-transform:uppercase; letter-spacing:.06em;">You\'re booking</div>' +
           '<div style="font-family:\'Fredoka\',sans-serif; font-weight:600; font-size:18px; color:var(--deep); margin:6px 0 4px; line-height:1.3;">' + summary + '</div>' +
           '<div style="font-weight:700; color:#6a6388; font-size:14px; margin:0 0 14px;">' + esc(name) + ' · ' + esc(hood) + ' · ' + esc(addr) + '</div>' +
-          '<a id="bk-confirm" href="' + href + '" style="display:block; text-align:center; font-family:\'Fredoka\',sans-serif; font-weight:600; font-size:18px; color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent2)); padding:15px; border-radius:14px; box-shadow:0 12px 26px rgba(124,58,237,.32);">💬 Text my mom + add to board</a>' +
-          '<div style="text-align:center; font-weight:700; color:#9b8cc0; font-size:13px; margin-top:8px;">Adds it to the board and opens a ready-to-send text.</div>' +
+          '<a id="bk-confirm" href="' + href + '" style="display:block; text-align:center; font-family:\'Fredoka\',sans-serif; font-weight:600; font-size:18px; color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent2)); padding:15px; border-radius:14px; box-shadow:0 12px 26px rgba(124,58,237,.32);">📧 Email to book + add to board</a>' +
+          '<div style="text-align:center; font-weight:700; color:#9b8cc0; font-size:13px; margin-top:8px;">Adds it to the board and opens a ready-to-send email.</div>' +
         '</div>';
       el('bk-confirm').onclick = function(){ addBooking({ name:name, hood:hood, addr:addr, service:svcName(), price:svcPrice(), date:nd, slot:st.slot }); };
     } else if(hood === 'other'){
