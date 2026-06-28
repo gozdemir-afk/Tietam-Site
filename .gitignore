@@ -9,9 +9,10 @@ yarn-error.log*
 # macOS
 .DS_Store
 
-# editor
+# editor / tooling
 .vscode/
 .idea/
+.claude/
 
 # env
 .env
