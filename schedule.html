@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Tietam's Jobs — Private Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Kaushan+Script&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--accent:#7c3aed;--accent2:#ec4899;--deep:#5b21b6;}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:#faf7ff;color:#2b1769;min-height:100vh;}
+  .wrap{max-width:900px;margin:0 auto;padding:34px 22px 60px;}
+  a{text-decoration:none;}
+  .bk-input{width:100%;padding:11px 14px;border-radius:12px;border:2px solid #ece6f7;font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;color:#3a2a6b;background:#fff;margin-bottom:10px;}
+  .bk-input:focus{outline:none;border-color:var(--accent);}
+  .bk-input::placeholder{color:#a99bcb;font-weight:600;}
+  select.bk-input{cursor:pointer;}
+  .btn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:16px;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;padding:12px 16px;border-radius:12px;cursor:pointer;}
+  .step{font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px;color:#8b7bb0;text-transform:uppercase;letter-spacing:.06em;margin:0 0 10px;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div style="text-align:center; margin-bottom:8px;">
+      <a href="index.html" style="display:inline-block; color:#8b7bb0; font-weight:700; font-size:13px; margin-bottom:10px;">← Back to Tietam's site</a>
+      <div style="font-size:34px; line-height:1;">📋</div>
+      <h1 style="font-family:'Kaushan Script',cursive; font-weight:400; font-size:clamp(34px,7vw,52px); color:var(--deep); margin:2px 0 0;">Tietam's Jobs</h1>
+      <div style="font-weight:700; color:#9b8cc0; font-size:14px; margin-top:2px;">Your private schedule — only you can see this.</div>
+    </div>
+
+    <!-- password gate -->
+    <div id="lock" style="max-width:380px; margin:24px auto 0; background:#fff; border:2px solid #ece6f7; border-radius:18px; padding:24px; text-align:center; box-shadow:0 10px 24px rgba(91,33,182,.10);">
+      <div style="font-size:30px; line-height:1;">🔒</div>
+      <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:17px; color:var(--deep); margin:4px 0 12px;">Private — for Tietam &amp; family</div>
+      <input id="pw" class="bk-input" type="password" placeholder="Enter password" style="margin-bottom:8px;">
+      <button id="unlock" class="btn" style="width:100%;">Unlock</button>
+      <div id="err" style="color:#993556; font-weight:700; font-size:13px; margin-top:8px; min-height:16px;"></div>
+    </div>
+
+    <!-- app (after unlock) -->
+    <div id="app" style="display:none;">
+
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin:24px 0 12px;">
+        <div style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:20px; color:var(--deep);">Upcoming jobs <span id="count" style="font-weight:700; color:#9b8cc0; font-size:15px;"></span></div>
+        <button id="lockbtn" style="background:none; border:none; color:#9b8cc0; font-weight:700; font-size:13px; cursor:pointer;">🔒 Lock</button>
+      </div>
+
+      <div id="jobs" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px;"></div>
+
+      <div style="background:#fff; border:2px solid #ece6f7; border-radius:18px; padding:20px; margin-top:22px; box-shadow:0 10px 24px rgba(91,33,182,.08);">
+        <div class="step">➕ Add a job</div>
+        <input id="j-name" class="bk-input" type="text" placeholder="Customer name">
+        <select id="j-hood" class="bk-input"><option value="">Neighborhood</option><option value="Chatham">Chatham</option><option value="Westgate">Westgate</option></select>
+        <input id="j-addr" class="bk-input" type="text" placeholder="Address">
+        <select id="j-serv" class="bk-input">
+          <option value="Dog Walk|$10">Dog Walk — $10</option>
+          <option value="Plant Watering|$10">Plant Watering — $10</option>
+          <option value="Dog Walk + Plant Watering|$15">Both — $15</option>
+        </select>
+        <input id="j-date" class="bk-input" type="date">
+        <select id="j-time" class="bk-input">
+          <option value="">Time</option>
+          <option>8:00 AM</option><option>10:00 AM</option><option>12:00 PM</option>
+          <option>3:00 PM</option><option>5:00 PM</option><option>6:30 PM</option>
+        </select>
+        <button id="j-add" class="btn" style="width:100%; margin-top:4px;">Add to board</button>
+        <div id="j-err" style="color:#993556; font-weight:700; font-size:13px; margin-top:8px; min-height:16px;"></div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+(function(){
+  var PW = "1234";
+  var KEY = 'tietam_bookings';
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } }
+  function save(a){ try{ localStorage.setItem(KEY, JSON.stringify(a)); }catch(e){} }
+  window.__rm = function(i){ var a=load(); a.splice(i,1); save(a); renderJobs(); };
+
+  function renderJobs(){
+    var a = load();
+    el('count').textContent = a.length ? '(' + a.length + ')' : '';
+    if(!a.length){
+      el('jobs').innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#a99bcb; font-weight:700; background:#fff; border:2px dashed #ddd2f3; border-radius:18px; padding:26px;">No jobs yet. Add one below as bookings come in. ✨</div>';
+      return;
+    }
+    el('jobs').innerHTML = a.map(function(b,i){
+      return '<div style="background:#fff; border:2px solid #ece6f7; border-radius:18px; padding:14px 16px; box-shadow:0 10px 24px rgba(91,33,182,.10); position:relative;">'
+        + '<button onclick="__rm('+i+')" aria-label="Remove" style="position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; border:none; background:#f2eefb; color:#8b7bb0; font-weight:800; cursor:pointer; line-height:1;">×</button>'
+        + '<div style="font-family:\'Fredoka\',sans-serif; font-weight:700; font-size:16px; color:var(--deep); padding-right:24px;">'+esc(b.name)+'</div>'
+        + '<div style="font-weight:700; color:#6a6388; font-size:13px; margin:2px 0 8px;">📍 '+(b.hood?esc(b.hood)+' · ':'')+esc(b.addr)+'</div>'
+        + '<div style="display:inline-block; font-weight:800; font-size:12px; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2)); padding:4px 10px; border-radius:999px;">'+esc(b.service)+' · '+esc(b.price)+'</div>'
+        + '<div style="font-weight:700; color:#3a2a6b; font-size:13px; margin-top:8px;">📅 '+esc(b.date||'(no date)')+'  ·  '+esc(b.slot||'')+'</div>'
+      + '</div>';
+    }).join('');
+  }
+
+  function niceDate(v){
+    if(!v) return '';
+    var p = v.split('-'); if(p.length!==3) return v;
+    var d = new Date(+p[0], +p[1]-1, +p[2]);
+    return d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+  }
+
+  function showApp(on){
+    el('lock').style.display = on ? 'none' : '';
+    el('app').style.display = on ? '' : 'none';
+    if(on) renderJobs();
+  }
+
+  // unlock flow
+  var unlocked=false; try{ unlocked = localStorage.getItem('tietam_board_unlocked')==='1'; }catch(e){}
+  showApp(unlocked);
+  el('unlock').onclick = function(){
+    if(el('pw').value === PW){ try{ localStorage.setItem('tietam_board_unlocked','1'); }catch(e){} el('err').textContent=''; el('pw').value=''; showApp(true); }
+    else { el('err').textContent='Wrong password — try again.'; }
+  };
+  el('pw').onkeydown = function(e){ if(e.key==='Enter') el('unlock').onclick(); };
+  el('lockbtn').onclick = function(){ try{ localStorage.removeItem('tietam_board_unlocked'); }catch(e){} showApp(false); };
+
+  // add-job flow
+  el('j-add').onclick = function(){
+    var name=(el('j-name').value||'').trim();
+    if(!name){ el('j-err').textContent='Add at least a customer name.'; return; }
+    var serv=el('j-serv').value.split('|');
+    addJob({ name:name, hood:el('j-hood').value, addr:(el('j-addr').value||'').trim(),
+             service:serv[0], price:serv[1], date:niceDate(el('j-date').value), slot:el('j-time').value });
+    el('j-name').value=''; el('j-addr').value=''; el('j-hood').value=''; el('j-date').value=''; el('j-time').value=''; el('j-err').textContent='';
+  };
+  function addJob(b){ var a=load(); a.push(b); save(a); renderJobs(); }
+})();
+</script>
+</body>
+</html>

@@ -169,26 +169,6 @@
     </div>
   </div>
 
-  <!-- ===== BOARD ===== -->
-  <div id="board-section" style="max-width:1060px; margin:0 auto; padding:18px 24px 6px;">
-    <div style="text-align:center; margin-bottom:13px;">
-      <span style="font-family:'Caveat',cursive; font-weight:700; font-size:24px; color:var(--accent2);">my schedule</span>
-      <h2 style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(22px,3.4vw,30px); margin:2px 0 0; color:var(--deep);">📋 Booking board</h2>
-      <div style="font-weight:700; color:#9b8cc0; font-size:13px; margin-top:4px;">Private — only the family can open this. (Saved on this device.)</div>
-    </div>
-    <div id="board-lock" style="max-width:380px; margin:0 auto; background:#fff; border:2px solid #ece6f7; border-radius:18px; padding:22px; text-align:center; box-shadow:0 10px 24px rgba(91,33,182,.10);">
-      <div style="font-size:30px; line-height:1;">🔒</div>
-      <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:17px; color:var(--deep); margin:4px 0 12px;">Private — for Tietam &amp; family</div>
-      <input id="board-pw" class="bk-input" type="password" placeholder="Enter password" style="margin-bottom:8px;">
-      <button id="board-unlock" type="button" style="width:100%; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; padding:12px; border-radius:12px; cursor:pointer;">Unlock board</button>
-      <div id="board-err" style="color:#993556; font-weight:700; font-size:13px; margin-top:8px; min-height:16px;"></div>
-    </div>
-    <div id="board-wrap" style="display:none;">
-      <div id="board" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px;"></div>
-      <div style="text-align:center; margin-top:12px;"><button id="board-lockbtn" type="button" style="background:none; border:none; color:#9b8cc0; font-weight:700; font-size:13px; cursor:pointer;">🔒 Lock board</button></div>
-    </div>
-  </div>
-
   <!-- ===== CONTACT ===== -->
   <div style="max-width:1060px; margin:0 auto; padding:24px 24px 12px;">
     <div style="display:flex; flex-wrap:wrap; gap:28px; align-items:center; justify-content:center;">
@@ -257,6 +237,7 @@
     <span style="position:absolute; bottom:24px; left:22%; font-size:18px; color:rgba(255,255,255,.28);">★</span>
     <div style="font-family:'Kaushan Script',cursive; font-size:clamp(34px,6vw,52px); color:#fff; line-height:1;">Thank you!</div>
     <div style="font-family:'Caveat',cursive; font-weight:700; font-size:26px; color:#fde047; margin-top:6px;">— Tietam 💛</div>
+    <div style="margin-top:14px;"><a href="schedule.html" style="color:rgba(255,255,255,.6); font-weight:700; font-size:12px; text-decoration:underline;">🔒 Tietam's job board</a></div>
   </div>
 
 </div>
@@ -286,7 +267,7 @@
   function removeBooking(i){ var a=loadBookings(); a.splice(i,1); saveBookings(a); renderBoard(); }
   window.__rmBk = function(i){ removeBooking(i); };
   function renderBoard(){
-    var box=el('board'), a=loadBookings();
+    var box=el('board'); if(!box) return; var a=loadBookings();
     if(!a.length){ box.innerHTML='<div style="grid-column:1/-1; text-align:center; color:#a99bcb; font-weight:700; background:#faf7ff; border:2px dashed #ddd2f3; border-radius:18px; padding:22px;">No bookings yet — confirmed ones will appear here. ✨</div>'; return; }
     box.innerHTML=a.map(function(b,i){
       return '<div style="background:#fff; border:2px solid #ece6f7; border-radius:18px; padding:14px 16px; box-shadow:0 10px 24px rgba(91,33,182,.10); position:relative;">'
@@ -403,6 +384,7 @@
     if(unlocked) renderBoard();
   }
   function initBoardLock(){
+    if(!el('board-lock')) return;
     var unlocked=false; try{ unlocked = localStorage.getItem('tietam_board_unlocked')==='1'; }catch(e){}
     showBoard(unlocked);
     el('board-unlock').onclick = function(){
