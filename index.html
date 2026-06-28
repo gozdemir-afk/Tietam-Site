@@ -174,9 +174,19 @@
     <div style="text-align:center; margin-bottom:13px;">
       <span style="font-family:'Caveat',cursive; font-weight:700; font-size:24px; color:var(--accent2);">my schedule</span>
       <h2 style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(22px,3.4vw,30px); margin:2px 0 0; color:var(--deep);">📋 Booking board</h2>
-      <div style="font-weight:700; color:#9b8cc0; font-size:13px; margin-top:4px;">Saved on this device — confirmed bookings show up here.</div>
+      <div style="font-weight:700; color:#9b8cc0; font-size:13px; margin-top:4px;">Private — only the family can open this. (Saved on this device.)</div>
     </div>
-    <div id="board" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px;"></div>
+    <div id="board-lock" style="max-width:380px; margin:0 auto; background:#fff; border:2px solid #ece6f7; border-radius:18px; padding:22px; text-align:center; box-shadow:0 10px 24px rgba(91,33,182,.10);">
+      <div style="font-size:30px; line-height:1;">🔒</div>
+      <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:17px; color:var(--deep); margin:4px 0 12px;">Private — for Tietam &amp; family</div>
+      <input id="board-pw" class="bk-input" type="password" placeholder="Enter password" style="margin-bottom:8px;">
+      <button id="board-unlock" type="button" style="width:100%; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; padding:12px; border-radius:12px; cursor:pointer;">Unlock board</button>
+      <div id="board-err" style="color:#993556; font-weight:700; font-size:13px; margin-top:8px; min-height:16px;"></div>
+    </div>
+    <div id="board-wrap" style="display:none;">
+      <div id="board" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px;"></div>
+      <div style="text-align:center; margin-top:12px;"><button id="board-lockbtn" type="button" style="background:none; border:none; color:#9b8cc0; font-weight:700; font-size:13px; cursor:pointer;">🔒 Lock board</button></div>
+    </div>
   </div>
 
   <!-- ===== CONTACT ===== -->
@@ -386,6 +396,24 @@
     }
   }
 
+  var BOARD_PW = "tietam2026";
+  function showBoard(unlocked){
+    el('board-lock').style.display = unlocked ? 'none' : '';
+    el('board-wrap').style.display = unlocked ? '' : 'none';
+    if(unlocked) renderBoard();
+  }
+  function initBoardLock(){
+    var unlocked=false; try{ unlocked = localStorage.getItem('tietam_board_unlocked')==='1'; }catch(e){}
+    showBoard(unlocked);
+    el('board-unlock').onclick = function(){
+      if(el('board-pw').value === BOARD_PW){
+        try{ localStorage.setItem('tietam_board_unlocked','1'); }catch(e){}
+        el('board-err').textContent=''; el('board-pw').value=''; showBoard(true);
+      } else { el('board-err').textContent='Wrong password — try again.'; }
+    };
+    el('board-pw').onkeydown = function(e){ if(e.key==='Enter') el('board-unlock').onclick(); };
+    el('board-lockbtn').onclick = function(){ try{ localStorage.removeItem('tietam_board_unlocked'); }catch(e){} showBoard(false); };
+  }
   function render(){ renderToggles(); renderCalendar(); renderSlots(); renderSend(); }
 
   el('svc-dog').onclick = function(){ st.service='dog'; render(); };
@@ -398,7 +426,7 @@
   el('bk-hood').onchange = renderSend;
 
   render();
-  renderBoard();
+  initBoardLock();
 })();
 </script>
 </body>
