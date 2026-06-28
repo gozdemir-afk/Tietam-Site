@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Kaushan+Script&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -259,11 +260,16 @@
   var gradSel = 'background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;';
 
   function el(id){ return document.getElementById(id); }
+  var SB_URL="https://aefenzlolwedfbbwcyst.supabase.co", SB_KEY="sb_publishable_XwrIjyqI_N2KhMrSefUzmA_TRqTxDEn";
+  var sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SB_URL, SB_KEY) : null;
   function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   var BK_KEY = 'tietam_bookings';
   function loadBookings(){ try { return JSON.parse(localStorage.getItem(BK_KEY) || '[]'); } catch(e){ return []; } }
   function saveBookings(a){ try { localStorage.setItem(BK_KEY, JSON.stringify(a)); } catch(e){} }
-  function addBooking(b){ var a=loadBookings(); a.push(b); saveBookings(a); renderBoard(); }
+  function addBooking(b){
+    if(!sb) return;
+    sb.from('bookings').insert([{ name:b.name, hood:b.hood, addr:b.addr, service:b.service, price:b.price, job_date:b.date, slot:b.slot }]).then(function(res){ if(res.error) console.warn('Booking save failed:', res.error.message); });
+  }
   function removeBooking(i){ var a=loadBookings(); a.splice(i,1); saveBookings(a); renderBoard(); }
   window.__rmBk = function(i){ removeBooking(i); };
   function renderBoard(){
