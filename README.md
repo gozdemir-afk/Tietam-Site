@@ -5,13 +5,19 @@ A single-file static website advertising Tietam's summer **dog-walking ($10/walk
 
 Contact is by **text only** to her mom at **317-445-3198** (no phone calls).
 
-The entire site is one file: [`index.html`](index.html). Plain HTML/CSS with a little
-inline SVG — no framework, no build step.
+The entire site is one file: [`index.html`](index.html). Plain HTML/CSS/JS — no framework,
+no build step. The hero photo is **embedded directly in the HTML** (base64 data URI), so the
+page stays a single self-contained file with no separate image asset to host. The booking
+calendar is a small vanilla-JS widget (no backend): picking a day + time builds a pre-filled
+`sms:` link to her mom.
 
-> **Privacy note (please keep in mind before editing):** This is a public website for a
-> minor. A couple of details were left off on purpose vs. the printed flyer — her actual
-> **photo** (a friendly dog/plant illustration is used instead) and the **name of her
-> school** (the page just says "Westfield"). Please keep those out by default.
+> **Privacy note — read before publishing changes.** This is a public, search-indexable
+> website for a minor. The family chose to include her **real photo** and her **school name
+> ("Westfield Intermediate School")** on the page. That means her face, first name, age,
+> grade, exact school, and a real phone number are all public together. That was an
+> informed, deliberate choice — but if you ever want to dial the exposure back down (swap
+> the photo for an illustration, or generalize the school to just "Westfield"), both are
+> quick edits in `index.html`. Keep the phone number and "text only / no calls" rule exact.
 
 ---
 
