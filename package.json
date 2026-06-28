@@ -1,0 +1,12 @@
+{
+  "name": "tietam-summer-helpers",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Single-file static site for Tietam's summer dog-walking and plant-watering services in Westfield, IN.",
+  "scripts": {
+    "dev": "live-server --port=5173 --no-browser=false"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

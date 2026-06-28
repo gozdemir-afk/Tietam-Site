@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tietam's Summer Helpers — Dog Walking & Plant Watering in Westfield</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --purple:#6C4BB6;
+    --purple-deep:#4A2F86;
+    --lavender:#EDE7FB;
+    --pink:#F0609B;
+    --pink-soft:#FFE3EF;
+    --green:#3FA65A;
+    --green-soft:#E3F5E8;
+    --blue:#2E84D8;
+    --blue-soft:#E2F0FC;
+    --cream:#FBF9F4;
+    --ink:#2B2150;
+    --shadow:0 14px 34px rgba(74,47,134,.16);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+
+  /* soft confetti background */
+  .sky{
+    position:fixed;inset:0;z-index:-1;
+    background:
+      radial-gradient(circle at 12% 18%, rgba(240,96,155,.10), transparent 40%),
+      radial-gradient(circle at 88% 12%, rgba(46,132,216,.10), transparent 42%),
+      radial-gradient(circle at 78% 82%, rgba(63,166,90,.10), transparent 44%),
+      var(--cream);
+  }
+
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px}
+
+  /* ---------- HERO ---------- */
+  header{padding:64px 0 28px;text-align:center;position:relative}
+  .eyebrow{
+    font-family:'Caveat',cursive;
+    font-size:1.9rem;color:var(--pink);
+    transform:rotate(-2deg);display:inline-block;
+  }
+  h1{
+    font-family:'Fredoka',sans-serif;font-weight:700;
+    font-size:clamp(2.5rem,7vw,4.4rem);
+    color:var(--purple-deep);line-height:1.02;margin:.1em 0 .15em;
+    letter-spacing:-.5px;
+  }
+  .tag{
+    font-size:clamp(1.05rem,2.4vw,1.3rem);font-weight:700;
+    color:var(--purple);max-width:560px;margin:0 auto;
+  }
+  .tag b{color:var(--pink)}
+
+  /* hero illustration */
+  .scene{
+    margin:30px auto 6px;max-width:340px;
+    animation:floaty 6s ease-in-out infinite;
+  }
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+  /* ---------- ABOUT ---------- */
+  .about{
+    background:#fff;border-radius:26px;box-shadow:var(--shadow);
+    padding:34px 30px;margin:26px 0;
+    border:2px solid var(--lavender);
+  }
+  .about h2{
+    font-family:'Fredoka',sans-serif;font-weight:600;
+    font-size:1.5rem;color:var(--purple-deep);margin-bottom:6px;
+  }
+  .about p{font-size:1.08rem;margin-bottom:18px;color:#473d6b}
+  .about p b{color:var(--purple)}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;
+    font-weight:700;font-size:.98rem;
+    padding:9px 16px;border-radius:999px;
+    background:var(--lavender);color:var(--purple-deep);
+  }
+  .chip .e{font-size:1.15rem;line-height:1}
+
+  /* ---------- BANNER ---------- */
+  .banner{
+    background:linear-gradient(135deg,var(--purple),var(--pink));
+    color:#fff;text-align:center;border-radius:22px;
+    padding:24px 22px;margin:30px 0 12px;
+    box-shadow:var(--shadow);
+  }
+  .banner .big{
+    font-family:'Fredoka',sans-serif;font-weight:700;
+    font-size:clamp(1.3rem,4vw,1.9rem);letter-spacing:.3px;
+  }
+  .banner .sub{font-family:'Caveat',cursive;font-size:1.7rem;opacity:.95}
+
+  /* ---------- SERVICES ---------- */
+  .services{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:26px 0}
+  @media(max-width:640px){.services{grid-template-columns:1fr}}
+  .card{
+    background:#fff;border-radius:24px;padding:30px 26px;text-align:center;
+    box-shadow:var(--shadow);border:2px solid transparent;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .card:hover{transform:translateY(-7px);box-shadow:0 22px 44px rgba(74,47,134,.22)}
+  .card.dog{border-color:var(--blue-soft);background:linear-gradient(180deg,var(--blue-soft),#fff 55%)}
+  .card.plant{border-color:var(--green-soft);background:linear-gradient(180deg,var(--green-soft),#fff 55%)}
+  .icon{width:96px;height:96px;margin:0 auto 14px}
+  .card h3{
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.35rem;
+    letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px;
+  }
+  .card.dog h3{color:var(--blue)}
+  .card.plant h3{color:var(--green)}
+  .price{font-family:'Fredoka',sans-serif;font-weight:700;font-size:2.6rem;line-height:1.1}
+  .card.dog .price{color:var(--blue)}
+  .card.plant .price{color:var(--green)}
+  .per{font-family:'Caveat',cursive;font-size:1.5rem;color:#6a6388}
+
+  /* ---------- CONTACT ---------- */
+  .contact{
+    background:#fff;border-radius:26px;box-shadow:var(--shadow);
+    border:2px solid var(--lavender);
+    padding:38px 28px;margin:30px 0;text-align:center;
+  }
+  .contact h2{
+    font-family:'Fredoka',sans-serif;font-weight:600;
+    font-size:1.5rem;color:var(--purple-deep);
+  }
+  .contact .lead{font-size:1.1rem;color:#473d6b;margin:6px 0 22px}
+  .contact .lead b{color:var(--pink)}
+  .textbtn{
+    display:inline-flex;align-items:center;gap:12px;
+    text-decoration:none;cursor:pointer;border:none;
+    font-family:'Fredoka',sans-serif;font-weight:700;
+    font-size:clamp(1.5rem,5vw,2.1rem);letter-spacing:1px;
+    color:var(--purple-deep);
+    background:var(--pink-soft);
+    padding:16px 30px;border-radius:18px;
+    box-shadow:0 8px 0 rgba(240,96,155,.28);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .textbtn:hover{transform:translateY(-2px);box-shadow:0 10px 0 rgba(240,96,155,.3)}
+  .textbtn:active{transform:translateY(4px);box-shadow:0 4px 0 rgba(240,96,155,.28)}
+  .textbtn svg{width:30px;height:30px;flex-shrink:0}
+  .note{
+    display:inline-block;margin-top:20px;
+    font-family:'Caveat',cursive;font-size:1.5rem;color:#7a719c;
+    background:#FFF7D6;padding:6px 18px;border-radius:12px;
+    transform:rotate(-1.5deg);box-shadow:0 5px 14px rgba(0,0,0,.06);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{text-align:center;padding:18px 0 56px}
+  .thanks{font-family:'Caveat',cursive;font-size:2.6rem;color:var(--purple)}
+  .sig{font-family:'Caveat',cursive;font-size:1.5rem;color:var(--pink)}
+
+  @media(prefers-reduced-motion:reduce){
+    .scene{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="sky"></div>
+
+<header>
+  <div class="wrap">
+    <span class="eyebrow">Hi there! 👋</span>
+    <h1>I'm Tietam!</h1>
+    <p class="tag">Your friendly neighborhood helper for <b>dog walks</b> and <b>plant watering</b> this summer in Westfield.</p>
+
+    <!-- Friendly illustrated hero: sun, dog, plant -->
+    <svg class="scene" viewBox="0 0 340 200" role="img" aria-label="A happy dog and a potted plant in the summer sun">
+      <circle cx="170" cy="56" r="34" fill="#FFD66B"/>
+      <g stroke="#FFD66B" stroke-width="6" stroke-linecap="round">
+        <line x1="170" y1="6" x2="170" y2="-2"/><line x1="170" y1="106" x2="170" y2="114"/>
+        <line x1="120" y1="56" x2="112" y2="56"/><line x1="220" y1="56" x2="228" y2="56"/>
+        <line x1="135" y1="21" x2="129" y2="15"/><line x1="205" y1="91" x2="211" y2="97"/>
+        <line x1="205" y1="21" x2="211" y2="15"/><line x1="135" y1="91" x2="129" y2="97"/>
+      </g>
+      <!-- dog -->
+      <g transform="translate(46,96)">
+        <ellipse cx="46" cy="80" rx="40" ry="9" fill="rgba(108,75,182,.12)"/>
+        <rect x="14" y="40" width="64" height="42" rx="20" fill="#F0B860"/>
+        <rect x="20" y="64" width="10" height="20" rx="5" fill="#E0A24A"/>
+        <rect x="62" y="64" width="10" height="20" rx="5" fill="#E0A24A"/>
+        <circle cx="74" cy="34" r="22" fill="#F6C877"/>
+        <path d="M58 18 q-8 -16 4 -20 q6 12 0 22 Z" fill="#E0A24A"/>
+        <ellipse cx="86" cy="40" rx="9" ry="6" fill="#fff"/>
+        <circle cx="70" cy="32" r="3.2" fill="#3a2b15"/>
+        <circle cx="84" cy="32" r="3.2" fill="#3a2b15"/>
+        <ellipse cx="89" cy="42" rx="4" ry="3" fill="#3a2b15"/>
+        <path d="M85 47 q4 5 9 1" stroke="#3a2b15" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <rect x="56" y="50" width="38" height="7" rx="3.5" fill="#2E84D8"/>
+        <circle cx="75" cy="58" r="4" fill="#FFD66B"/>
+      </g>
+      <!-- plant -->
+      <g transform="translate(232,86)">
+        <ellipse cx="34" cy="92" rx="34" ry="8" fill="rgba(108,75,182,.12)"/>
+        <path d="M34 54 C20 30 10 34 8 16 C26 18 30 36 34 50 Z" fill="#4FB86A"/>
+        <path d="M34 54 C48 30 58 34 60 16 C42 18 38 36 34 50 Z" fill="#3FA65A"/>
+        <path d="M34 56 C32 32 34 24 34 6 C40 26 38 40 34 54 Z" fill="#5FC97B"/>
+        <path d="M12 56 h44 l-6 38 h-32 Z" fill="#F0609B"/>
+        <path d="M16 56 h36 l-1.6 10 h-32.8 Z" fill="#FF85B3"/>
+        <path d="M34 70 l5 5 l-5 5 l-5 -5 Z" fill="#fff"/>
+      </g>
+    </svg>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="about">
+    <h2>A little about me</h2>
+    <p>I'm <b>11 years old</b> and heading into <b>6th grade</b> this fall. I live right here in <b>Westfield</b>, and I'm a busy kid who loves staying active. Here's what I'm into:</p>
+    <div class="chips">
+      <span class="chip"><span class="e">🥎</span> Travel softball</span>
+      <span class="chip"><span class="e">⛷️</span> Skiing</span>
+      <span class="chip"><span class="e">👟</span> Running</span>
+      <span class="chip"><span class="e">🏈</span> Flag football</span>
+    </div>
+  </section>
+
+  <div class="banner">
+    <div class="big">I'M LOOKING TO EARN SOME EXTRA MONEY</div>
+    <div class="sub">this summer! ✨</div>
+  </div>
+
+  <section class="services" aria-label="Services and prices">
+    <div class="card dog">
+      <svg class="icon" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="30" fill="#E2F0FC"/>
+        <rect x="20" y="30" width="24" height="16" rx="8" fill="#F0B860"/>
+        <circle cx="44" cy="26" r="13" fill="#F6C877"/>
+        <path d="M34 12 q-5 -10 3 -12 q4 8 0 14 Z" fill="#E0A24A"/>
+        <circle cx="41" cy="25" r="2.4" fill="#3a2b15"/>
+        <circle cx="49" cy="25" r="2.4" fill="#3a2b15"/>
+        <ellipse cx="52" cy="31" rx="3" ry="2.2" fill="#3a2b15"/>
+        <rect x="30" y="36" width="20" height="5" rx="2.5" fill="#2E84D8"/>
+      </svg>
+      <h3>Walk Your Dog</h3>
+      <div class="price">$10</div>
+      <div class="per">per walk</div>
+    </div>
+
+    <div class="card plant">
+      <svg class="icon" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="30" fill="#E3F5E8"/>
+        <path d="M32 34 C22 18 14 22 12 8 C26 10 28 24 32 32 Z" fill="#4FB86A"/>
+        <path d="M32 34 C42 18 50 22 52 8 C38 10 36 24 32 32 Z" fill="#3FA65A"/>
+        <path d="M32 36 C30 20 32 14 32 2 C37 18 35 28 32 34 Z" fill="#5FC97B"/>
+        <path d="M16 36 h32 l-4 22 h-24 Z" fill="#F0609B"/>
+        <path d="M19 36 h26 l-1 7 h-24 Z" fill="#FF85B3"/>
+        <path d="M32 45 l4 4 l-4 4 l-4 -4 Z" fill="#fff"/>
+      </svg>
+      <h3>Water Your Plants</h3>
+      <div class="price">$10</div>
+      <div class="per">per watering visit</div>
+    </div>
+  </section>
+
+  <section class="contact">
+    <h2>Want to book me?</h2>
+    <p class="lead">If you're interested, please <b>text my mom</b> — that's the best way to reach us.</p>
+    <a class="textbtn" href="sms:+13174453198?&body=Hi!%20I%20saw%20Tietam's%20page%20and%20I'd%20like%20to%20book%20a%20dog%20walk%20or%20plant%20watering.">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 9 9 0 0 1-3.8-.8L3 21l1.9-5.7a8.5 8.5 0 1 1 16.1-3.8Z" stroke="#6C4BB6" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+      317-445-3198
+    </a>
+    <div class="note">📵 Please text — no phone calls!</div>
+  </section>
+</main>
+
+<footer>
+  <div class="thanks">Thank you!</div>
+  <div class="sig">— Tietam</div>
+</footer>
+
+</body>
+</html>
