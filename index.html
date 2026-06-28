@@ -57,6 +57,7 @@
       <div style="flex:1 1 360px; min-width:300px; max-width:540px;">
         <div style="font-family:'Caveat',cursive; font-weight:700; font-size:22px; color:var(--accent2); margin-bottom:2px;">hi there, neighbor!</div>
         <h1 style="font-family:'Kaushan Script',cursive; font-weight:400; font-size:clamp(38px,7vw,60px); line-height:.98; margin:0 0 4px; color:var(--deep);">My name is<br>Tietam.</h1>
+        <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(19px,3.1vw,25px); color:var(--accent); line-height:1.2; margin:6px 0 2px;">I'll walk your dog 🐶 or water your plants 🪴</div>
         <div style="height:6px; width:160px; border-radius:99px; background:linear-gradient(90deg, var(--accent2), transparent); margin:6px 0 18px;"></div>
         <p style="font-size:20px; line-height:1.5; font-weight:600; color:#3a2a6b; margin:0 0 16px;">I'm a hard-working 11-year-old going into <strong style="color:var(--accent);">6th grade</strong> at <strong style="color:var(--accent);">Westfield Intermediate School</strong> this fall — and I'm earning some extra money this summer.</p>
         <div style="display:flex; flex-wrap:wrap; gap:12px;">
@@ -97,6 +98,13 @@
         </div>
       </div>
     </div>
+    <div style="margin-top:14px; background:linear-gradient(135deg, var(--accent), var(--accent2)); border-radius:22px; padding:16px 22px; box-shadow:0 16px 38px rgba(124,58,237,.22); display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px 14px; text-align:center;">
+      <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(16px,2.7vw,21px); color:#fff;">🐶 + 🪴 Want both? A dog walk <strong style="font-weight:700;">and</strong> plant watering —</span>
+      <span style="display:inline-flex; align-items:baseline; gap:8px;">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:34px; color:#fde047;">$15</span>
+        <span style="font-weight:800; color:#fff; font-size:14px;">save $5</span>
+      </span>
+    </div>
   </div>
 
   <!-- ===== BOOKING ===== -->
@@ -111,9 +119,10 @@
       <!-- left: service + calendar -->
       <div>
         <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; color:#8b7bb0; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;">1 · What do you need?</div>
-        <div style="display:flex; gap:10px; margin-bottom:22px;">
+        <div style="display:flex; gap:8px; margin-bottom:22px;">
           <button id="svc-dog" type="button">🐶 Dog Walk</button>
           <button id="svc-plant" type="button">🪴 Plants</button>
+          <button id="svc-both" type="button">🐶🪴 Both $15</button>
         </div>
 
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
@@ -228,13 +237,14 @@
   var base = 'aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:12px;font-weight:700;font-size:15px;';
   var slotBase = 'padding:13px 6px;border-radius:14px;font-weight:700;font-size:15px;text-align:center;cursor:pointer;';
   var navStyle = 'width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;border:none;padding:0;line-height:1;';
-  var tog = 'flex:1;padding:14px 8px;border-radius:16px;font-family:Fredoka,sans-serif;font-weight:600;font-size:16px;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:6px;';
+  var tog = 'flex:1;padding:13px 6px;border-radius:16px;font-family:Fredoka,sans-serif;font-weight:600;font-size:14px;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:4px;line-height:1.15;text-align:center;';
   var active = 'background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 8px 18px rgba(124,58,237,.28);';
   var idle = 'background:#fff;color:#5a4a86;border:2px solid #ece6f7;';
   var gradSel = 'background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;';
 
   function el(id){ return document.getElementById(id); }
-  function svcName(){ return st.service === 'dog' ? 'Dog Walk' : 'Plant Watering'; }
+  function svcName(){ return st.service === 'dog' ? 'Dog Walk' : st.service === 'plant' ? 'Plant Watering' : 'Dog Walk + Plant Watering'; }
+  function svcPrice(){ return st.service === 'both' ? '$15' : '$10'; }
   function niceDate(){
     if(!st.sel) return null;
     return new Date(st.sel.y, st.sel.m, st.sel.d)
@@ -244,6 +254,7 @@
   function renderToggles(){
     el('svc-dog').setAttribute('style', tog + (st.service==='dog' ? active : idle));
     el('svc-plant').setAttribute('style', tog + (st.service==='plant' ? active : idle));
+    el('svc-both').setAttribute('style', tog + (st.service==='both' ? active : idle));
   }
 
   function renderCalendar(){
@@ -304,8 +315,8 @@
     var ready = !!(st.sel && st.slot);
     if(ready){
       var nd = niceDate();
-      var summary = svcName() + '  ·  ' + nd + '  ·  ' + st.slot;
-      var body = "Hi! I'd like to book Tietam for a " + svcName() + " on " + nd + " at " + st.slot + ".";
+      var summary = svcName() + ' (' + svcPrice() + ')  ·  ' + nd + '  ·  ' + st.slot;
+      var body = "Hi! I'd like to book Tietam for a " + svcName() + " (" + svcPrice() + ") on " + nd + " at " + st.slot + ".";
       var href = 'sms:317-445-3198?&body=' + encodeURIComponent(body);
       box.innerHTML =
         '<div style="background:linear-gradient(135deg,#faf5ff,#f3ecff); border:2px solid #e2d5fb; border-radius:18px; padding:18px;">' +
@@ -324,6 +335,7 @@
 
   el('svc-dog').onclick = function(){ st.service='dog'; render(); };
   el('svc-plant').onclick = function(){ st.service='plant'; render(); };
+  el('svc-both').onclick = function(){ st.service='both'; render(); };
   el('prev').onclick = function(){ if(st.vy===TY && st.vm===TM) return; st.vm--; if(st.vm<0){st.vm=11;st.vy--;} render(); };
   el('next').onclick = function(){ st.vm++; if(st.vm>11){st.vm=0;st.vy++;} render(); };
 
