@@ -8,8 +8,16 @@ Contact is by **text only** to her mom at **317-445-3198** (no phone calls).
 The entire site is one file: [`index.html`](index.html). Plain HTML/CSS/JS — no framework,
 no build step. The hero photo is **embedded directly in the HTML** (base64 data URI), so the
 page stays a single self-contained file with no separate image asset to host. The booking
-calendar is a small vanilla-JS widget (no backend): picking a day + time builds a pre-filled
-`sms:` link to her mom.
+calendar is a small vanilla-JS widget (no backend): pick a service (dog walk $10, plants $10,
+or **both for $15**), a day, a time, and enter your name + address — it builds a pre-filled
+`sms:` link to her mom **and** adds the booking to a **📋 Booking board** on the page.
+
+> **About the booking board:** it's stored in the browser's `localStorage`, so it's saved
+> **on whatever device made the booking** — it is *not* a shared online schedule that Mom
+> sees from another phone. The reliable hand-off is the text message (which includes name,
+> address, service, price, date, and time). Making the board sync across devices would need
+> a backend; that would also mean storing customers' names and home addresses online, which
+> is a deliberate privacy decision for a minor's site — left off on purpose.
 
 > **Privacy note — read before publishing changes.** This is a public, search-indexable
 > website for a minor. The family chose to include her **real photo** and her **school name

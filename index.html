@@ -16,6 +16,9 @@
   button{font-family:inherit;}
   @keyframes floaty{0%,100%{transform:translateY(0) rotate(var(--r,0deg));}50%{transform:translateY(-12px) rotate(var(--r,0deg));}}
   ::selection{background:#f9a8d4;color:#3a1d6e;}
+  input.bk-input{width:100%;padding:11px 14px;border-radius:12px;border:2px solid #ece6f7;font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;color:#3a2a6b;background:#fff;margin-bottom:10px;}
+  input.bk-input:focus{outline:none;border-color:var(--accent);}
+  input.bk-input::placeholder{color:#a99bcb;font-weight:600;}
   @media(prefers-reduced-motion:reduce){[style*="floaty"]{animation:none !important;}}
 </style>
 </head>
@@ -148,10 +151,23 @@
         <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; color:#8b7bb0; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;">2 · Pick a time</div>
         <div id="slotgrid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:22px;"></div>
 
-        <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; color:#8b7bb0; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;">3 · Send the request</div>
+        <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; color:#8b7bb0; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;">3 · Your details</div>
+        <input id="bk-name" class="bk-input" type="text" placeholder="Your name" autocomplete="name">
+        <input id="bk-addr" class="bk-input" type="text" placeholder="Your address" autocomplete="street-address">
+        <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; color:#8b7bb0; text-transform:uppercase; letter-spacing:.06em; margin:6px 0 10px;">4 · Send the request</div>
         <div id="sendbox"></div>
       </div>
     </div>
+  </div>
+
+  <!-- ===== BOARD ===== -->
+  <div id="board-section" style="max-width:1060px; margin:0 auto; padding:18px 24px 6px;">
+    <div style="text-align:center; margin-bottom:13px;">
+      <span style="font-family:'Caveat',cursive; font-weight:700; font-size:24px; color:var(--accent2);">my schedule</span>
+      <h2 style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(22px,3.4vw,30px); margin:2px 0 0; color:var(--deep);">📋 Booking board</h2>
+      <div style="font-weight:700; color:#9b8cc0; font-size:13px; margin-top:4px;">Saved on this device — confirmed bookings show up here.</div>
+    </div>
+    <div id="board" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px;"></div>
   </div>
 
   <!-- ===== CONTACT ===== -->
@@ -243,6 +259,26 @@
   var gradSel = 'background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;';
 
   function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  var BK_KEY = 'tietam_bookings';
+  function loadBookings(){ try { return JSON.parse(localStorage.getItem(BK_KEY) || '[]'); } catch(e){ return []; } }
+  function saveBookings(a){ try { localStorage.setItem(BK_KEY, JSON.stringify(a)); } catch(e){} }
+  function addBooking(b){ var a=loadBookings(); a.push(b); saveBookings(a); renderBoard(); }
+  function removeBooking(i){ var a=loadBookings(); a.splice(i,1); saveBookings(a); renderBoard(); }
+  window.__rmBk = function(i){ removeBooking(i); };
+  function renderBoard(){
+    var box=el('board'), a=loadBookings();
+    if(!a.length){ box.innerHTML='<div style="grid-column:1/-1; text-align:center; color:#a99bcb; font-weight:700; background:#faf7ff; border:2px dashed #ddd2f3; border-radius:18px; padding:22px;">No bookings yet — confirmed ones will appear here. ✨</div>'; return; }
+    box.innerHTML=a.map(function(b,i){
+      return '<div style="background:#fff; border:2px solid #ece6f7; border-radius:18px; padding:14px 16px; box-shadow:0 10px 24px rgba(91,33,182,.10); position:relative;">'
+        + '<button onclick="__rmBk('+i+')" aria-label="Remove booking" style="position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; border:none; background:#f2eefb; color:#8b7bb0; font-weight:800; cursor:pointer; line-height:1;">×</button>'
+        + '<div style="font-family:\'Fredoka\',sans-serif; font-weight:700; font-size:16px; color:var(--deep); padding-right:24px;">'+esc(b.name)+'</div>'
+        + '<div style="font-weight:700; color:#6a6388; font-size:13px; margin:2px 0 8px;">📍 '+esc(b.addr)+'</div>'
+        + '<div style="display:inline-block; font-weight:800; font-size:12px; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2)); padding:4px 10px; border-radius:999px;">'+esc(b.service)+' · '+esc(b.price)+'</div>'
+        + '<div style="font-weight:700; color:#3a2a6b; font-size:13px; margin-top:8px;">📅 '+esc(b.date)+'  ·  '+esc(b.slot)+'</div>'
+      + '</div>';
+    }).join('');
+  }
   function svcName(){ return st.service === 'dog' ? 'Dog Walk' : st.service === 'plant' ? 'Plant Watering' : 'Dog Walk + Plant Watering'; }
   function svcPrice(){ return st.service === 'both' ? '$15' : '$10'; }
   function niceDate(){
@@ -312,22 +348,27 @@
 
   function renderSend(){
     var box = el('sendbox');
-    var ready = !!(st.sel && st.slot);
+    var name = (el('bk-name').value || '').trim();
+    var addr = (el('bk-addr').value || '').trim();
+    var ready = !!(st.sel && st.slot && name && addr);
     if(ready){
       var nd = niceDate();
       var summary = svcName() + ' (' + svcPrice() + ')  ·  ' + nd + '  ·  ' + st.slot;
-      var body = "Hi! I'd like to book Tietam for a " + svcName() + " (" + svcPrice() + ") on " + nd + " at " + st.slot + ".";
+      var body = "Hi! This is " + name + ". I'd like to book Tietam for a " + svcName() + " (" + svcPrice() + ") on " + nd + " at " + st.slot + ". Address: " + addr + ".";
       var href = 'sms:317-445-3198?&body=' + encodeURIComponent(body);
       box.innerHTML =
         '<div style="background:linear-gradient(135deg,#faf5ff,#f3ecff); border:2px solid #e2d5fb; border-radius:18px; padding:18px;">' +
           '<div style="font-weight:800; color:#8b7bb0; font-size:12px; text-transform:uppercase; letter-spacing:.06em;">You\'re booking</div>' +
-          '<div style="font-family:\'Fredoka\',sans-serif; font-weight:600; font-size:18px; color:var(--deep); margin:6px 0 14px; line-height:1.3;">' + summary + '</div>' +
-          '<a href="' + href + '" style="display:block; text-align:center; font-family:\'Fredoka\',sans-serif; font-weight:600; font-size:18px; color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent2)); padding:15px; border-radius:14px; box-shadow:0 12px 26px rgba(124,58,237,.32);">💬 Text my mom to confirm</a>' +
-          '<div style="text-align:center; font-weight:700; color:#9b8cc0; font-size:13px; margin-top:8px;">Opens a ready-to-send text — mom does the rest!</div>' +
+          '<div style="font-family:\'Fredoka\',sans-serif; font-weight:600; font-size:18px; color:var(--deep); margin:6px 0 4px; line-height:1.3;">' + summary + '</div>' +
+          '<div style="font-weight:700; color:#6a6388; font-size:14px; margin:0 0 14px;">' + esc(name) + ' · ' + esc(addr) + '</div>' +
+          '<a id="bk-confirm" href="' + href + '" style="display:block; text-align:center; font-family:\'Fredoka\',sans-serif; font-weight:600; font-size:18px; color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent2)); padding:15px; border-radius:14px; box-shadow:0 12px 26px rgba(124,58,237,.32);">💬 Text my mom + add to board</a>' +
+          '<div style="text-align:center; font-weight:700; color:#9b8cc0; font-size:13px; margin-top:8px;">Adds it to the board and opens a ready-to-send text.</div>' +
         '</div>';
+      el('bk-confirm').onclick = function(){ addBooking({ name:name, addr:addr, service:svcName(), price:svcPrice(), date:nd, slot:st.slot }); };
     } else {
+      var need=[]; if(!st.sel) need.push('a day'); if(!st.slot) need.push('a time'); if(!name) need.push('your name'); if(!addr) need.push('your address');
       box.innerHTML =
-        '<div style="background:#faf7ff; border:2px dashed #ddd2f3; border-radius:18px; padding:22px; text-align:center; color:#a99bcb; font-weight:700;">Pick a day and a time and your<br>request will appear here ✨</div>';
+        '<div style="background:#faf7ff; border:2px dashed #ddd2f3; border-radius:18px; padding:22px; text-align:center; color:#a99bcb; font-weight:700;">Add ' + need.join(', ') + ' and your<br>request will appear here ✨</div>';
     }
   }
 
@@ -338,8 +379,11 @@
   el('svc-both').onclick = function(){ st.service='both'; render(); };
   el('prev').onclick = function(){ if(st.vy===TY && st.vm===TM) return; st.vm--; if(st.vm<0){st.vm=11;st.vy--;} render(); };
   el('next').onclick = function(){ st.vm++; if(st.vm>11){st.vm=0;st.vy++;} render(); };
+  el('bk-name').oninput = renderSend;
+  el('bk-addr').oninput = renderSend;
 
   render();
+  renderBoard();
 })();
 </script>
 </body>
