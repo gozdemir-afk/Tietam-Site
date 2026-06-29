@@ -82,7 +82,7 @@
   var SB_URL = "https://aefenzlolwedfbbwcyst.supabase.co";
   var SB_KEY = "sb_publishable_XwrIjyqI_N2KhMrSefUzmA_TRqTxDEn";
   var sb = window.supabase.createClient(SB_URL, SB_KEY);
-  (function(){ var sel=document.getElementById('j-time'); for(var t=480;t<=1200;t+=30){ var h=Math.floor(t/60),m=t%60,ap=h<12?'AM':'PM',h12=((h+11)%12)+1; var o=document.createElement('option'); o.textContent=h12+':'+(m<10?'0'+m:m)+' '+ap; sel.appendChild(o); } })();
+  (function(){ var sel=document.getElementById('j-time'); for(var t=570;t<=1200;t+=30){ var h=Math.floor(t/60),m=t%60,ap=h<12?'AM':'PM',h12=((h+11)%12)+1; var o=document.createElement('option'); o.textContent=h12+':'+(m<10?'0'+m:m)+' '+ap; sel.appendChild(o); } })();
   function el(id){ return document.getElementById(id); }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   window.__rm = function(id){
