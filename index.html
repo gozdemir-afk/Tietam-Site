@@ -152,7 +152,7 @@
       <!-- right: times + confirm -->
       <div style="border-left:1px dashed #e6def5; padding-left:26px;">
         <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; color:#8b7bb0; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;">2 · Pick a time</div>
-        <div id="slotgrid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:22px;"></div>
+        <div id="slotgrid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:22px;"></div>
 
         <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; color:#8b7bb0; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;">3 · Your details</div>
         <input id="bk-name" class="bk-input" type="text" placeholder="Your name" autocomplete="name">
@@ -245,14 +245,14 @@
 
 <script>
 (function(){
-  var SLOTS = ['8:00 AM','10:00 AM','12:00 PM','3:00 PM','5:00 PM','6:30 PM'];
+  var SLOTS = (function(){ var o=[]; for(var t=480;t<=1200;t+=30){ var h=Math.floor(t/60),m=t%60,ap=h<12?'AM':'PM',h12=((h+11)%12)+1; o.push(h12+':'+(m<10?'0'+m:m)+' '+ap); } return o; })();
   var today = new Date();
   var TY = today.getFullYear(), TM = today.getMonth(), TD = today.getDate();
 
   var st = { service:'dog', vy:TY, vm:TM, sel:null, slot:null };
 
   var base = 'aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:12px;font-weight:700;font-size:15px;';
-  var slotBase = 'padding:13px 6px;border-radius:14px;font-weight:700;font-size:15px;text-align:center;cursor:pointer;';
+  var slotBase = 'padding:11px 4px;border-radius:13px;font-weight:700;font-size:13.5px;text-align:center;cursor:pointer;';
   var navStyle = 'width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;border:none;padding:0;line-height:1;';
   var tog = 'flex:1;padding:13px 6px;border-radius:16px;font-family:Fredoka,sans-serif;font-weight:600;font-size:14px;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:4px;line-height:1.15;text-align:center;';
   var active = 'background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 8px 18px rgba(124,58,237,.28);';
