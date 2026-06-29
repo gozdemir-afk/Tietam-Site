@@ -63,6 +63,7 @@
         <input id="j-name" class="bk-input" type="text" placeholder="Customer name">
         <select id="j-hood" class="bk-input"><option value="">Neighborhood</option><option value="Chatham">Chatham</option><option value="Westgate">Westgate</option></select>
         <input id="j-addr" class="bk-input" type="text" placeholder="Address">
+        <input id="j-phone" class="bk-input" type="tel" placeholder="Phone number">
         <select id="j-serv" class="bk-input">
           <option value="Dog Walk|$10">Dog Walk — $10</option>
           <option value="Plant Watering|$10">Plant Watering — $10</option>
@@ -102,7 +103,8 @@
       return '<div style="background:#fff; border:2px solid #ece6f7; border-radius:18px; padding:14px 16px; box-shadow:0 10px 24px rgba(91,33,182,.10); position:relative;">'
         + '<button onclick="__rm(\'' + esc(b.id) + '\')" aria-label="Remove" style="position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; border:none; background:#f2eefb; color:#8b7bb0; font-weight:800; cursor:pointer; line-height:1;">×</button>'
         + '<div style="font-family:\'Fredoka\',sans-serif; font-weight:700; font-size:16px; color:var(--deep); padding-right:24px;">'+esc(b.name)+'</div>'
-        + '<div style="font-weight:700; color:#6a6388; font-size:13px; margin:2px 0 8px;">📍 '+(b.hood?esc(b.hood)+' · ':'')+esc(b.addr)+'</div>'
+        + '<div style="font-weight:700; color:#6a6388; font-size:13px; margin:2px 0 4px;">📍 '+(b.hood?esc(b.hood)+' · ':'')+esc(b.addr)+'</div>'
+        + (b.phone ? '<div style="font-weight:700; color:#6a6388; font-size:13px; margin:0 0 8px;">📞 '+esc(b.phone)+'</div>' : '')
         + '<div style="display:inline-block; font-weight:800; font-size:12px; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2)); padding:4px 10px; border-radius:999px;">'+esc(b.service)+' · '+esc(b.price)+'</div>'
         + '<div style="font-weight:700; color:#3a2a6b; font-size:13px; margin-top:8px;">📅 '+esc(b.job_date||'(no date)')+'  ·  '+esc(b.slot||'')+'</div>'
       + '</div>';
@@ -147,10 +149,10 @@
     if(!name){ el('j-err').textContent='Add at least a customer name.'; return; }
     var serv=el('j-serv').value.split('|');
     el('j-err').textContent='Adding…';
-    sb.from('bookings').insert([{ name:name, hood:el('j-hood').value, addr:(el('j-addr').value||'').trim(),
+    sb.from('bookings').insert([{ name:name, hood:el('j-hood').value, addr:(el('j-addr').value||'').trim(), phone:(el('j-phone').value||'').trim(),
         service:serv[0], price:serv[1], job_date:niceDate(el('j-date').value), slot:el('j-time').value }]).then(function(res){
       if(res.error){ el('j-err').textContent = res.error.message; return; }
-      el('j-name').value=''; el('j-addr').value=''; el('j-hood').value=''; el('j-date').value=''; el('j-time').value=''; el('j-err').textContent='';
+      el('j-name').value=''; el('j-addr').value=''; el('j-phone').value=''; el('j-hood').value=''; el('j-date').value=''; el('j-time').value=''; el('j-err').textContent='';
       loadJobs();
     });
   };

@@ -176,6 +176,7 @@
         </select>
         <input id="bk-addr" class="bk-input" type="text" placeholder="Your address" autocomplete="street-address">
         <div style="font-weight:700; color:#9b8cc0; font-size:12.5px; margin:-4px 0 10px;">📍 Chatham &amp; Westgate neighborhoods only</div>
+        <input id="bk-phone" class="bk-input" type="tel" placeholder="Your phone number" autocomplete="tel">
         <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; color:#8b7bb0; text-transform:uppercase; letter-spacing:.06em; margin:6px 0 10px;">4 · Send the request</div>
         <div id="sendbox"></div>
       </div>
@@ -280,7 +281,10 @@
   function saveBookings(a){ try { localStorage.setItem(BK_KEY, JSON.stringify(a)); } catch(e){} }
   function addBooking(b){
     if(!sb) return;
-    sb.from('bookings').insert([{ name:b.name, hood:b.hood, addr:b.addr, service:b.service, price:b.price, job_date:b.date, slot:b.slot }]).then(function(res){ if(res.error) console.warn('Booking save failed:', res.error.message); });
+    var row = { name:b.name, hood:b.hood, addr:b.addr, phone:b.phone, service:b.service, price:b.price, job_date:b.date, slot:b.slot };
+    sb.from('bookings').insert([row]).then(function(res){
+      if(res.error){ var r2={}; for(var k in row){ if(k!=='phone') r2[k]=row[k]; } sb.from('bookings').insert([r2]).then(function(rr){ if(rr.error) console.warn('Booking save failed:', rr.error.message); }); }
+    });
   }
   function removeBooking(i){ var a=loadBookings(); a.splice(i,1); saveBookings(a); renderBoard(); }
   window.__rmBk = function(i){ removeBooking(i); };
@@ -369,28 +373,37 @@
     var name = (el('bk-name').value || '').trim();
     var hood = el('bk-hood').value;
     var addr = (el('bk-addr').value || '').trim();
+    var phone = (el('bk-phone').value || '').trim();
     var inArea = (hood === 'Chatham' || hood === 'Westgate');
-    var ready = !!(st.sel && st.slot && name && addr && inArea);
+    var ready = !!(st.sel && st.slot && name && addr && phone && inArea);
     if(ready){
       var nd = niceDate();
       var summary = svcName() + ' (' + svcPrice() + ')  ·  ' + nd + '  ·  ' + st.slot;
-      var body = "Hi! This is " + name + " in the " + hood + " neighborhood. I'd like to book Tietam for a " + svcName() + " (" + svcPrice() + ") on " + nd + " at " + st.slot + ". Address: " + addr + ".";
+      var body = "Hi! This is " + name + " in the " + hood + " neighborhood. I'd like to book Tietam for a " + svcName() + " (" + svcPrice() + ") on " + nd + " at " + st.slot + ". Address: " + addr + ". Phone: " + phone + ".";
       var subject = 'Booking for Tietam — ' + svcName();
       var href = 'mailto:T.ladd15@icloud.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
       box.innerHTML =
         '<div style="background:linear-gradient(135deg,#faf5ff,#f3ecff); border:2px solid #e2d5fb; border-radius:18px; padding:18px;">' +
           '<div style="font-weight:800; color:#8b7bb0; font-size:12px; text-transform:uppercase; letter-spacing:.06em;">You\'re booking</div>' +
           '<div style="font-family:\'Fredoka\',sans-serif; font-weight:600; font-size:18px; color:var(--deep); margin:6px 0 4px; line-height:1.3;">' + summary + '</div>' +
-          '<div style="font-weight:700; color:#6a6388; font-size:14px; margin:0 0 14px;">' + esc(name) + ' · ' + esc(hood) + ' · ' + esc(addr) + '</div>' +
+          '<div style="font-weight:700; color:#6a6388; font-size:14px; margin:0 0 14px;">' + esc(name) + ' · ' + esc(hood) + ' · ' + esc(addr) + ' · 📞 ' + esc(phone) + '</div>' +
           '<a id="bk-confirm" href="' + href + '" style="display:block; text-align:center; font-family:\'Fredoka\',sans-serif; font-weight:600; font-size:18px; color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent2)); padding:15px; border-radius:14px; box-shadow:0 12px 26px rgba(124,58,237,.32);">📧 Email to book + add to board</a>' +
           '<div style="text-align:center; font-weight:700; color:#9b8cc0; font-size:13px; margin-top:8px;">Adds it to the board and opens a ready-to-send email.</div>' +
         '</div>';
-      el('bk-confirm').onclick = function(){ addBooking({ name:name, hood:hood, addr:addr, service:svcName(), price:svcPrice(), date:nd, slot:st.slot }); };
+      el('bk-confirm').onclick = function(){
+        addBooking({ name:name, hood:hood, addr:addr, phone:phone, service:svcName(), price:svcPrice(), date:nd, slot:st.slot });
+        box.innerHTML = '<div style="background:linear-gradient(135deg,#e3f5e8,#f3ecff); border:2px solid #bfe6c9; border-radius:18px; padding:24px; text-align:center;">' +
+          '<div style="font-size:40px; line-height:1;">✅</div>' +
+          '<div style="font-family:\'Fredoka\',sans-serif; font-weight:700; font-size:22px; color:var(--deep); margin:6px 0 4px;">You\'re booked!</div>' +
+          '<div style="font-weight:700; color:#3a2a6b; font-size:15px;">Tietam got your request — she\'ll reach out to confirm. 💜</div>' +
+          '<div style="font-weight:700; color:#9b8cc0; font-size:13px; margin-top:10px;">An email also opened — send it if you like, but you\'re already on her list.</div>' +
+        '</div>';
+      };
     } else if(hood === 'other'){
       box.innerHTML =
         '<div style="background:#fff4f8; border:2px dashed #f4c0d1; border-radius:18px; padding:22px; text-align:center; color:#993556; font-weight:800; line-height:1.4;">Aw, shoot! 💜 Right now Tietam only helps in the<br>Chatham &amp; Westgate neighborhoods.</div>';
     } else {
-      var need=[]; if(!name) need.push('your name'); if(!inArea) need.push('your neighborhood'); if(!addr) need.push('your address'); if(!st.sel) need.push('a day'); if(!st.slot) need.push('a time');
+      var need=[]; if(!name) need.push('your name'); if(!inArea) need.push('your neighborhood'); if(!addr) need.push('your address'); if(!phone) need.push('your phone number'); if(!st.sel) need.push('a day'); if(!st.slot) need.push('a time');
       box.innerHTML =
         '<div style="background:#faf7ff; border:2px dashed #ddd2f3; border-radius:18px; padding:22px; text-align:center; color:#a99bcb; font-weight:700;">Add ' + need.join(', ') + ' and your<br>request will appear here ✨</div>';
     }
@@ -424,6 +437,7 @@
   el('next').onclick = function(){ st.vm++; if(st.vm>11){st.vm=0;st.vy++;} render(); };
   el('bk-name').oninput = renderSend;
   el('bk-addr').oninput = renderSend;
+  el('bk-phone').oninput = renderSend;
   el('bk-hood').onchange = renderSend;
 
   render();
