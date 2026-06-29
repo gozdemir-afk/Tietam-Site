@@ -262,7 +262,7 @@
   var today = new Date();
   var TY = today.getFullYear(), TM = today.getMonth(), TD = today.getDate();
 
-  var st = { service:'dog', vy:TY, vm:TM, sel:null, slot:null };
+  var st = { service:'dog', vy:TY, vm:TM, sel:null, slot:null, taken:[], takenFor:null };
 
   var base = 'aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:12px;font-weight:700;font-size:15px;';
   var slotBase = 'padding:11px 4px;border-radius:13px;font-weight:700;font-size:13.5px;text-align:center;cursor:pointer;';
@@ -347,7 +347,7 @@
         var cell = document.createElement('div');
         cell.setAttribute('style', s);
         cell.textContent = String(day);
-        if(!past) cell.onclick = function(){ st.sel = { y:st.vy, m:st.vm, d:day }; render(); };
+        if(!past) cell.onclick = function(){ st.sel = { y:st.vy, m:st.vm, d:day }; st.slot = null; render(); fetchTaken(); };
         grid.appendChild(cell);
       })(d);
     }
@@ -357,14 +357,31 @@
   function renderSlots(){
     var g = el('slotgrid');
     g.innerHTML = '';
+    var taken = (st.sel && st.takenFor === niceDate()) ? st.taken : [];
     SLOTS.forEach(function(s){
       var chip = document.createElement('div');
-      chip.setAttribute('style', slotBase + (st.slot===s
-        ? gradSel + 'box-shadow:0 8px 18px rgba(124,58,237,.3);'
-        : 'background:#fff;color:#3a2a6b;border:2px solid #ece6f7;'));
-      chip.textContent = s;
-      chip.onclick = function(){ st.slot = s; render(); };
+      if(taken.indexOf(s) !== -1){
+        chip.setAttribute('style', slotBase + 'background:#f2eefb;color:#c9bce0;cursor:not-allowed;text-decoration:line-through;');
+        chip.title = 'Already booked';
+        chip.textContent = s;
+      } else {
+        chip.setAttribute('style', slotBase + (st.slot===s
+          ? gradSel + 'box-shadow:0 8px 18px rgba(124,58,237,.3);'
+          : 'background:#fff;color:#3a2a6b;border:2px solid #ece6f7;'));
+        chip.textContent = s;
+        chip.onclick = function(){ st.slot = s; render(); };
+      }
       g.appendChild(chip);
+    });
+  }
+  function fetchTaken(){
+    if(!sb || !st.sel) return;
+    var d = niceDate();
+    sb.rpc('taken_slots', { p_date: d }).then(function(res){
+      st.takenFor = d;
+      st.taken = (!res.error && res.data) ? res.data : [];
+      if(st.slot && st.taken.indexOf(st.slot) !== -1){ st.slot = null; }
+      renderSlots(); renderSend();
     });
   }
 
